@@ -1,0 +1,40 @@
+# Default training configuration.
+#
+#   python scripts/train.py                          # PPO on healthy Ant-v5
+#   python scripts/train.py algo=sac                 # SAC instead (Ex 2)
+#   python scripts/train.py env.disabled_legs=[0]    # specialist on crippled Ant (Ex 4)
+#   python scripts/train.py env.n_random_legs=1      # domain randomisation, fixed severity (Ex 5)
+#   python scripts/train.py env.n_random_legs_max=4  # domain randomisation over severity too
+#   python scripts/train.py -m algo.learning_rate=1e-4,3e-4,1e-3 algo.batch_size=64,256   # Ex 6
+defaults:
+  - algo: ppo
+  - _self_
+
+env:
+  id: Ant-v5
+  n_envs: 8
+  # Injury — leave everything empty/null for the healthy Ant.
+  disabled_joints: []      # fixed joint indices, e.g. [2, 3]
+  disabled_legs: []        # fixed legs (0 FL, 1 FR, 2 BL, 3 BR); each leg = hip+ankle pair
+  n_random_legs: null      # int: re-draw the disabled legs on every reset
+  n_random_legs_max: null  # int: also randomise the COUNT, uniform in [0, max]
+  # Passed to gym.make("Ant-v5", ...). Known-good simplification from the
+  # 2025 baseline: drop contact forces from obs (105 -> 27 dims) and reward.
+  kwargs:
+    include_cfrc_ext_in_observation: false
+    contact_cost_weight: 0.0
+
+train:
+  total_timesteps: 1_000_000
+  seed: 123
+  eval_freq: 20_000        # in total env steps (across all n_envs)
+  n_eval_episodes: 10
+  checkpoint_freq: 100_000 # in total env steps
+  device: auto
+
+hydra:
+  run:
+    dir: runs/${algo.name}_${env.id}/${now:%Y-%m-%d_%H-%M-%S}
+  sweep:
+    dir: runs/multirun/${algo.name}_${env.id}/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.num}

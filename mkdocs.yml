@@ -1,0 +1,158 @@
+# =============================================================================
+# RL Bootcamp 2026 — Tutorial Documentation
+# Build:   conda run -n rlbootcamp mkdocs build
+# Serve:   conda run -n rlbootcamp mkdocs serve   # http://127.0.0.1:8000
+# =============================================================================
+site_name: RL Bootcamp 2026 — Tutorial Docs
+site_description: >-
+  Student-facing handbook for the hands-on tutorial track of the
+  Reinforcement Learning Bootcamp 2026 (Salzburg, Sep 16–18 2026).
+site_author: Leander Grech & Lea Keller
+copyright: Copyright &copy; 2026 RL Bootcamp Team
+
+# Where the markdown lives, and where the built HTML is written.
+docs_dir: docs
+site_dir: site
+
+site_url: https://sarl-plus.github.io/RL_Bootcamp_2026_tutorial/
+repo_url: https://github.com/SARL-PLUS/RL_Bootcamp_2026_tutorial
+repo_name: SARL-PLUS/RL_Bootcamp_2026_tutorial
+
+# Installation lives in the primer and this site only links to it, so a stale
+# link is the failure mode that matters. Under `--strict` these become errors.
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+# Internal planning material is NOT part of the student handbook — keep it out.
+exclude_docs: |
+  planning/
+  tutorial-planning/
+  assets/README.md
+  # Staging area for contributed drafts that have not been placed yet.
+  # Untracked on purpose — excluded so `mkdocs build --strict` stays green.
+  temp/
+
+theme:
+  name: material
+  language: en
+  # Drop a logo at docs/assets/logo.svg and a favicon at docs/assets/favicon.png
+  # to override these. Comment the two lines back in once the files exist.
+  # logo: assets/logo.svg
+  # favicon: assets/favicon.png
+  custom_dir: docs/overrides        # HTML template overrides (icons, partials)
+  icon:
+    logo: material/airplane
+    repo: fontawesome/brands/github
+  font:
+    text: Inter
+    code: JetBrains Mono
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    # Dark mode (matches the bootcamp website)
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+# --- Brand assets: edit these files to recolour / rebrand the whole site ---
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  version: !ENV [DOCS_VERSION, "0.35.0"]   # mirrors the repo-root VERSION file
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/SARL-PLUS/RL_Bootcamp_2026_tutorial
+      name: GitHub repository
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.keys
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  # Installation is documented once, in the public participant primer.
+  # This page is a pointer to it — do not grow it back into a guide.
+  - Setup: setup.md
+  # One tab per session, in difficulty order, each self-contained: what the
+  # environment is, how to run it, and what we do in the room all live together.
+  # Colour-coded by docs/overrides/main.html — green, amber, red.
+  - Fundamentals:
+      - fundamentals/index.md
+      - fundamentals/maze.md
+  - Intermediate:
+      - intermediate/index.md
+      - intermediate/crippled-ant.md
+      - intermediate/running.md
+  - Advanced:
+      - advanced/index.md
+      - The environment:
+          - advanced/airtraffic.md
+          - advanced/baseline.md
+      - Running it:
+          - advanced/training.md
+          - advanced/evaluation.md
+      - The competition:
+          - advanced/competition.md
+          - advanced/kaggle.md
+          - advanced/organisers.md
+      - advanced/design-sprint.md
+  # Session-independent: the exact spaces, the reward maths, the baseline.
+  - Reference:
+      - reference/environment-api.md
+      - reference/reward-design.md
+      - reference/rule-based-controller.md
+      - reference/tooling.md
+      - changelog.md

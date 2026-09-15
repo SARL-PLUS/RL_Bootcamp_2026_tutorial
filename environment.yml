@@ -1,0 +1,56 @@
+# RL Bootcamp — participant Conda environment.
+#
+#   conda env create -f environment.yml      # first time
+#   conda env update -f environment.yml --prune   # to pick up new deps later
+#   conda activate rlbootcamp
+#
+# This is the *generic* bootcamp toolkit: everything the hands-on sessions are
+# built on, independent of any particular year's exercises.
+#
+# CANONICAL COPY. Each edition's tutorial repository carries this file verbatim
+# so that cloning either repository produces the same environment. Edit it here,
+# copy it there, and keep the checksums equal:
+#
+#   md5sum environment.yml ../RL_bootcamp_20XX/environment.yml
+#
+# Anything an edition needs *on top* of this belongs in a separate requirements
+# file in that repository, not in a second environment.
+#
+# Pins are intentionally loose (lower bounds) so the environment resolves on
+# Linux, macOS (Intel + Apple Silicon) and Windows. The versions in the comments
+# are what this environment was last verified against.
+name: rlbootcamp
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip>=24
+  # --- Scientific stack (conda builds behave best across OSes) ---
+  - numpy>=1.26          # verified: 2.3.2
+  - pandas>=2.0          # verified: 2.3.1
+  - matplotlib>=3.7      # verified: 3.10.5
+  - pyyaml>=6.0          # verified: 6.0.2
+  - ffmpeg               # required to save .mp4 renders — do not drop this
+  # --- Notebooks ---
+  # Some sessions are delivered entirely as notebooks. `notebook` is included as
+  # well as `jupyterlab` so that both `jupyter lab` and `jupyter notebook` work
+  # — under Notebook 7 they share one stack, so this costs almost nothing, and
+  # it saves arguing with participants about which command to type.
+  - jupyterlab>=4.0      # verified: 4.4.7
+  - notebook>=7.0        # verified: 7.4.5
+  - ipykernel>=6.29      # verified: 6.30.1
+  # --- Everything RL-specific goes through pip for the freshest wheels ---
+  - pip:
+      - gymnasium>=1.0          # verified: 1.2.0  — the environment API
+      - "gymnasium[mujoco]"     # MuJoCo-backed continuous-control tasks
+      - "gymnasium[classic_control]"  # pulls pygame; WITHOUT it, rendering
+                                #   CartPole/Pendulum raises DependencyNotInstalled
+      - mujoco>=3.0             # verified: 3.3.4  — physics engine
+      - stable-baselines3>=2.3  # verified: 2.7.0  — reference RL algorithms
+      - sb3-contrib>=2.3        # MaskablePPO, QR-DQN, TRPO, ...
+      - torch>=2.2              # verified: 2.8.0  — CPU wheel is enough
+      - tensorboard>=2.15       # training curves
+      - hydra-core>=1.3         # config management / hyperparameter sweeps
+      - moviepy>=1.0            # video export from evaluation runs
+      - tqdm>=4.66
+      - pytest>=8.0             # for the smoke test and any env contract tests

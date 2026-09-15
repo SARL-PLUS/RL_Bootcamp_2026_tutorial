@@ -1,0 +1,33 @@
+algo:
+  name: PPO
+  policy: MlpPolicy
+  policy_kwargs:
+    net_arch:
+    - 256
+    - 256
+  normalize_obs: true
+  normalize_reward: true
+  learning_rate: 0.0003
+  n_steps: 2048
+  batch_size: 256
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  ent_coef: 0.0
+  clip_range: 0.2
+env:
+  id: Ant-v5
+  n_envs: 8
+  disabled_joints: []
+  disabled_legs: []
+  n_random_legs: null
+  kwargs:
+    include_cfrc_ext_in_observation: false
+    contact_cost_weight: 0.0
+train:
+  total_timesteps: 3000000
+  seed: 123
+  eval_freq: 20000
+  n_eval_episodes: 10
+  checkpoint_freq: 100000
+  device: auto

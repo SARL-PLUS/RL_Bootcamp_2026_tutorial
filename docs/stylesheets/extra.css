@@ -1,0 +1,117 @@
+/* ===========================================================================
+   RL Bootcamp 2026 — Brand stylesheet
+   ---------------------------------------------------------------------------
+   This is the SINGLE place to change the look of the docs site.
+   Mirrors the palette used by website/style.css so the docs and the landing
+   page stay visually consistent.
+
+   To rebrand:
+     * Colours .......... edit the --rlb-* variables in :root below.
+     * Logo / favicon ... drop files in docs/assets/ and point mkdocs.yml
+                          theme.logo / theme.favicon at them.
+     * Icons ............ change theme.icon.* in mkdocs.yml (Material/FontAwesome
+                          icon names) or override partials in docs/overrides/.
+   =========================================================================== */
+
+:root {
+  /* ---- Bootcamp brand palette (from website/style.css) ---- */
+  --rlb-bg:           #0d1117;
+  --rlb-surface:      #161b22;
+  --rlb-text:         #ffffff;
+  --rlb-text-muted:   #8b949e;
+  --rlb-accent:       #58a6ff;   /* primary blue   */
+  --rlb-accent-2:     #3fb950;   /* neon green     */
+  --rlb-border:       rgba(240, 246, 252, 0.1);
+}
+
+/* --- Map the brand palette onto Material's custom colour slots --- */
+
+/* Light scheme */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        var(--rlb-accent);
+  --md-primary-fg-color--light: #7cb8ff;
+  --md-primary-fg-color--dark:  #2f81f7;
+  --md-accent-fg-color:         var(--rlb-accent-2);
+  --md-typeset-a-color:         #1f6feb;
+}
+
+/* Dark scheme — the bootcamp's signature look */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        var(--rlb-accent);
+  --md-primary-fg-color--light: #7cb8ff;
+  --md-primary-fg-color--dark:  #2f81f7;
+  --md-accent-fg-color:         var(--rlb-accent-2);
+
+  --md-default-bg-color:        var(--rlb-bg);
+  --md-typeset-a-color:         var(--rlb-accent);
+  --md-code-bg-color:           var(--rlb-surface);
+}
+
+/* Brand wordmark in the header — solid white for maximum contrast */
+.md-header__title .md-ellipsis {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Subtle radial glow behind the page title, echoing the website hero */
+[data-md-color-scheme="slate"] .md-content {
+  background:
+    radial-gradient(circle at 50% -10%,
+      rgba(88, 166, 255, 0.08) 0%, transparent 45%);
+}
+
+/* Rounded code blocks + branded copy button hover */
+.md-typeset pre > code { border-radius: 8px; }
+.md-clipboard:hover { color: var(--rlb-accent-2); }
+
+/* Version chip in the header */
+.md-version {
+  border: 1px solid var(--rlb-border);
+  border-radius: 6px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Site-map cards on the home page.
+ *
+ * The colours mirror docs/overrides/main.html exactly, so the swatch a reader
+ * picks on the home page is the colour of the tab they land in. Change one and
+ * change the other — they are a single code, expressed twice.
+ *
+ * Material renders `grid cards` as div.grid.cards > ul > li, and attr_list
+ * cannot reach that <li> from inside the markdown — so the card colour is
+ * assigned positionally here. THE ORDER OF THE THREE CARDS IN index.md IS
+ * LOAD-BEARING: Fundamentals, Intermediate, Advanced.
+ * ------------------------------------------------------------------------ */
+/* The pill carries its own class, so the DIFFICULTY COLOUR cannot be broken by
+ * reordering the cards. Only the decorative left border is positional. */
+.rlb-level.rlb-f { --rlb-card: #2e7d32; }
+.rlb-level.rlb-i { --rlb-card: #9a6700; }
+.rlb-level.rlb-a { --rlb-card: #c1121f; }
+
+[data-md-color-scheme="slate"] .rlb-level.rlb-f { --rlb-card: #56d364; }
+[data-md-color-scheme="slate"] .rlb-level.rlb-i { --rlb-card: #e3b341; }
+[data-md-color-scheme="slate"] .rlb-level.rlb-a { --rlb-card: #ff7b72; }
+
+.rlb-map > ul > li:nth-child(1) { --rlb-card: #2e7d32; }   /* Fundamentals */
+.rlb-map > ul > li:nth-child(2) { --rlb-card: #9a6700; }   /* Intermediate */
+.rlb-map > ul > li:nth-child(3) { --rlb-card: #c1121f; }   /* Advanced     */
+
+[data-md-color-scheme="slate"] .rlb-map > ul > li:nth-child(1) { --rlb-card: #56d364; }
+[data-md-color-scheme="slate"] .rlb-map > ul > li:nth-child(2) { --rlb-card: #e3b341; }
+[data-md-color-scheme="slate"] .rlb-map > ul > li:nth-child(3) { --rlb-card: #ff7b72; }
+
+.rlb-map > ul > li { border-left: 4px solid var(--rlb-card); }
+
+/* The difficulty pill inside a card, inheriting that card's colour. */
+.rlb-map .rlb-level {
+  display: inline-block;
+  padding: 0.05em 0.6em;
+  border-radius: 1em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--rlb-card);
+}
+[data-md-color-scheme="slate"] .rlb-map .rlb-level { color: #0d1117; }

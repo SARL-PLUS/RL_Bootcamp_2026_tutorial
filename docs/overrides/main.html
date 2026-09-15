@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{#
+  Per-tab colour, so the page you are on tells you which session you are in and
+  the site map's colour code means something once you have clicked it.
+
+    Home / Setup / Reference   blue    (the site default)
+    Fundamentals               green
+    Intermediate               amber
+    Advanced                   red
+
+  Implemented by redefining the two Material colour variables that
+  `docs/stylesheets/extra.css` already drives everything from. Pure Jinja on
+  `page.url` — no JavaScript, and it survives the light/dark toggle because
+  both schemes read the same variables.
+
+  Every value below is contrast-checked against its own surface (white page for
+  `default`, #0d1117 for `slate`), floor 4.5:
+
+    green  #2e7d32 / #56d364    5.13 / 9.82
+    amber  #9a6700 / #e3b341    4.87 / 9.72
+    red    #c1121f / #ff7b72    6.22 / 7.51
+
+  The light-mode amber is much darker than the brand amber #e09f3e, which
+  measures 2.22 and is unusable as link text. Re-check with:
+    python slides/scripts/validate_palette.py "<hex>" --mode light
+#}
+{% macro tabcolour(light, dark) %}
+<style>
+  [data-md-color-scheme="default"] {
+    --md-primary-fg-color: {{ light }};
+    --md-accent-fg-color:  {{ light }};
+    --md-typeset-a-color:  {{ light }};
+  }
+  [data-md-color-scheme="slate"] {
+    --md-primary-fg-color: {{ dark }};
+    --md-accent-fg-color:  {{ dark }};
+    --md-typeset-a-color:  {{ dark }};
+  }
+</style>
+{% endmacro %}
+
+{% block extrahead %}
+  {{ super() }}
+  {# `page` is None on templates rendered outside a page (404, search). #}
+  {% set url = page.url if page else '' %}
+  {% if url.startswith('fundamentals/') %}{{ tabcolour('#2e7d32', '#56d364') }}
+  {% elif url.startswith('intermediate/') %}{{ tabcolour('#9a6700', '#e3b341') }}
+  {% elif url.startswith('advanced/') %}{{ tabcolour('#c1121f', '#ff7b72') }}
+  {% endif %}
+{% endblock %}

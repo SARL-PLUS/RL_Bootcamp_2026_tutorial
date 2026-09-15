@@ -1,0 +1,15 @@
+# @package _global_
+# Exercise 6 — grid search over learning rate x batch size.
+#
+#   python scripts/train.py -m +experiment=sweep_lr_batch
+#
+# Equivalent to spelling the grid out on the CLI:
+#   python scripts/train.py -m algo.learning_rate=1e-4,3e-4,1e-3 algo.batch_size=64,256
+hydra:
+  sweeper:
+    params:
+      algo.learning_rate: 1e-4,3e-4,1e-3
+      algo.batch_size: 64,256
+
+train:
+  total_timesteps: 300_000   # keep each cell short; this is a sensitivity probe

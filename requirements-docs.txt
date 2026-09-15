@@ -1,0 +1,7 @@
+# Toolchain for building this handbook. Participants do NOT need this — the
+# `rlbootcamp` environment is deliberately identical to the participant primer's,
+# so the docs toolchain lives here instead of in environment.yml.
+#
+#   pip install -r requirements-docs.txt
+#   mkdocs serve
+mkdocs-material>=9.5

@@ -1,0 +1,66 @@
+# Build the handbook and publish it to GitHub Pages.
+#
+# One-time setup, whenever this repo is ready to go public:
+#   1. Repository Settings -> General -> Danger Zone -> Change visibility -> Public
+#   2. Repository Settings -> Pages -> Build and deployment -> Source: GitHub Actions
+# Until both are done this workflow still builds on every push (a free check
+# that the handbook isn't broken) but the deploy job below has nothing to
+# publish to.
+name: docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          # Without this, the cache step looks only for requirements.txt or
+          # pyproject.toml and fails the job outright when it finds neither.
+          cache-dependency-path: requirements-docs.txt
+
+      - name: Install docs toolchain
+        run: pip install -r requirements-docs.txt
+
+      - name: Read version
+        run: echo "DOCS_VERSION=$(cat VERSION)" >> "$GITHUB_ENV"
+
+      # --strict turns broken internal links and nav typos into build failures.
+      - name: Build site
+        run: mkdocs build --strict
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    # Only publish from main; pull requests just verify the build.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

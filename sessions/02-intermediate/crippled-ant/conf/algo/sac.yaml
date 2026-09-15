@@ -1,0 +1,20 @@
+# SAC defaults for Ant-v5 (close to the SB3-zoo settings).
+name: SAC
+policy: MlpPolicy
+policy_kwargs:
+  net_arch: [256, 256]
+# Off-policy replay + shifting normalisation statistics interact badly:
+# old transitions in the buffer were normalised with stale stats. Keep
+# VecNormalize off for SAC (the SB3 zoo does the same).
+normalize_obs: false
+normalize_reward: false
+
+learning_rate: 3.0e-4
+buffer_size: 1_000_000
+batch_size: 256
+learning_starts: 10_000
+tau: 0.005
+gamma: 0.99
+train_freq: 1
+gradient_steps: 1
+ent_coef: auto
